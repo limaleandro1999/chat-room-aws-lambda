@@ -1,0 +1,71 @@
+service: chat-room-aws-lambda
+frameworkVersion: '2 || 3'
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  region: sa-east-1
+
+functions:
+  connect:
+    handler: connect.handler
+    events:
+      - websocket:
+          route: $connect
+  
+  disconnect:
+    handler: disconnect.handler
+    events:
+      - websocket:
+          route: $disconnect
+  
+  onMessage:
+    handler: on-message.handler
+    events:
+      - websocket:
+          route: onMessage
+
+resources:
+  Resources:
+    socketConnectionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: socket-connections
+        AttributeDefinitions:
+          - AttributeName: connectionId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: connectionId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST        
+
+custom:
+  serverlessPluginTypescript:
+    tsConfigFileLocation: './tsconfig.json'
+
+  dynamodb:
+    stages:
+      - dev
+    start:
+      host: localhost
+      port: 4001
+      inMemory: true
+      heapInitial: 50m
+      heapMax: 1g
+      migrate: true
+      seed: true
+      convertEmptyValues: false
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-dynamodb-local
+  - serverless-offline
+
+package:
+  individually: true
+  exclude:
+    - "lib/**"
+    - "node_modules/**"
