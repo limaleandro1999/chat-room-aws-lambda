@@ -2,15 +2,22 @@ import { APIGatewayEvent } from "aws-lambda";
 import { getDynamoDBClient } from "./utils";
 
 export async function handler(event: APIGatewayEvent) {
-    const dynamoDbClient = getDynamoDBClient();
-    const connectionId = event.requestContext.connectionId
+    try {
+        const dynamoDbClient = getDynamoDBClient();
+        const connectionId = event.requestContext.connectionId
+        
+        await dynamoDbClient.delete({
+            TableName: "socket-connections",
+            Key: {
+                connectionId
+            }
+        }).promise();
     
-    await dynamoDbClient.delete({
-        TableName: "socket-connections",
-        Key: {
-            connectionId
-        }
-    }).promise();
-
-    return;
+        return { statusCode: 200, body: "" };   
+    } catch (error: any) {
+        return { 
+            statusCode: 500,
+            body: JSON.stringify({ message: error.message }) 
+        };
+    }
 }

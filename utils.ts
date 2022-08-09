@@ -7,9 +7,9 @@ export function getDynamoDBClient() {
     });
 }
 
-export function getApiGatewayManagementApiClient(event: APIGatewayEvent) {
+export function getApiGatewayManagementApiClient() {
     return new AWS.ApiGatewayManagementApi({
-        apiVersion: '2018-11-29',
+        // apiVersion: '2018-11-29',
         endpoint: process.env.IS_OFFLINE ? "http://localhost:3001" : undefined
     });
 }
