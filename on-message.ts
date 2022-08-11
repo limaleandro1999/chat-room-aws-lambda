@@ -1,6 +1,11 @@
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import { APIGatewayEvent } from "aws-lambda";
 import { getApiGatewayManagementApiClient, getDynamoDBClient } from "./utils";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export async function handler(event: APIGatewayEvent) {
     try {
@@ -13,7 +18,9 @@ export async function handler(event: APIGatewayEvent) {
 
         const connectionIds = response.Items?.map(({ connectionId }) => connectionId) ?? [];
         const body = event.body ? JSON.parse(event.body) : {};
-        const sentDate = dayjs().format("HH:mm DD/MM/YYYY");
+        const sentDate = dayjs()
+            .tz("America/Fortaleza")
+            .format("HH:mm DD/MM/YYYY");
 
         for await (const connectionId of connectionIds) {
             await ApiGatewayManagementApiClient.postToConnection({
