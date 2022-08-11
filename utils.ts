@@ -8,6 +8,6 @@ export function getDynamoDBClient() {
 
 export function getApiGatewayManagementApiClient(endpoint: string) {
     return new AWS.ApiGatewayManagementApi({
-        endpoint,
+        endpoint: process.env.IS_OFFLINE ? "http://localhost:3001" : endpoint,
     });
 }

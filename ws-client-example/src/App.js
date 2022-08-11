@@ -34,11 +34,13 @@ function ChatScreen({ username }) {
   const [socketUrl] = useState(process.env.REACT_APP_WS_URL);
   const [messageHistory, setMessageHistory] = useState([]);
   const [message, setMessage] = useState("");
-  const { lastMessage, readyState, sendJsonMessage } = useWebSocket(socketUrl);
+  const { lastMessage, readyState, sendJsonMessage } = useWebSocket(
+    socketUrl, 
+    { queryParams: { username } }
+  );
 
   useEffect(() => {
     if (lastMessage !== null) {
-      console.log("lastMessage", lastMessage)
       if (lastMessage.data) {
         const lastMessageData = JSON.parse(lastMessage.data);
         const audio = getFunnyAudioByMessage(lastMessageData.message);
