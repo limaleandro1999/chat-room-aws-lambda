@@ -8,12 +8,18 @@ provider:
   runtime: nodejs14.x
   lambdaHashingVersion: 20201221
   region: sa-east-1
-
+  tracing:
+    lambda: true
+    apiGateway: true
+  
   iam:
     role:
       statements:
         - Effect: Allow
           Action:
+            - xray:PutTraceSegment
+            - xray:PutTraceSegments
+            - xray:PutTelemetryRecords
             - dynamodb:Query
             - dynamodb:Scan
             - dynamodb:PutItem

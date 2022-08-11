@@ -1,4 +1,3 @@
-import { APIGatewayEvent } from "aws-lambda";
 import AWS from "aws-sdk";
 
 export function getDynamoDBClient() {
@@ -7,9 +6,8 @@ export function getDynamoDBClient() {
     });
 }
 
-export function getApiGatewayManagementApiClient() {
+export function getApiGatewayManagementApiClient(endpoint: string) {
     return new AWS.ApiGatewayManagementApi({
-        // apiVersion: '2018-11-29',
-        endpoint: process.env.IS_OFFLINE ? "http://localhost:3001" : undefined
+        endpoint,
     });
 }

@@ -5,7 +5,7 @@ import { getApiGatewayManagementApiClient, getDynamoDBClient } from "./utils";
 export async function handler(event: APIGatewayEvent) {
     try {
         const dynamoDbClient = getDynamoDBClient();
-        const ApiGatewayManagementApiClient = getApiGatewayManagementApiClient();
+        const ApiGatewayManagementApiClient = getApiGatewayManagementApiClient(`${event.requestContext.domainName}/${event.requestContext.stage}`);
 
         const response = await dynamoDbClient.scan({
             TableName: "socket-connections",
@@ -16,8 +16,7 @@ export async function handler(event: APIGatewayEvent) {
         const sentDate = dayjs().format("HH:mm DD/MM/YYYY");
 
         for await (const connectionId of connectionIds) {
-            console.log(connectionId);
-            const response = await ApiGatewayManagementApiClient.postToConnection({
+            await ApiGatewayManagementApiClient.postToConnection({
                 ConnectionId: connectionId,
                 Data: JSON.stringify({ 
                     ...body, 
