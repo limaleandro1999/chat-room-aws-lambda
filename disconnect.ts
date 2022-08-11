@@ -6,7 +6,7 @@ export async function handler(event: APIGatewayEvent) {
     try {
         const dynamoDbClient = getDynamoDBClient();
         const ApiGatewayManagementApiClient = getApiGatewayManagementApiClient(`${event.requestContext.domainName}/${event.requestContext.stage}`);
-        const connectionId = event.requestContext.connectionId
+        const connectionId = event.requestContext.connectionId;
         
         const response = await dynamoDbClient.scan({
             TableName: "socket-connections",
