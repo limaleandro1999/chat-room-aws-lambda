@@ -24,7 +24,7 @@ export function ChatScreen({ username }) {
 
       setMessageHistory((prev) => prev.concat(lastMessageData));
     }
-  }, [lastMessage, setMessageHistory]);
+  }, [lastMessage]);
 
   const handleClickSendMessage = () => {
     if (message.length > 200) {
@@ -64,19 +64,25 @@ export function ChatScreen({ username }) {
           Send message
         </button>
       </div>
-      <div>
+      <div style={{ 
+        overflow: "scroll", 
+        height: 300, 
+        display: "flex", 
+        flexDirection: "column-reverse" 
+      }}>
         <ul>
-          {messageHistory.reverse().map((item, idx) => (
-            <li 
-              key={idx} 
-              style={
-                item?.flag === "warn" 
-                ? {color: "red"} 
-                : null}
-              >
-                {item.username} {item.sentDate}: {item.message}
+          {messageHistory
+            .map((item, idx) => (
+              <li 
+                key={idx} 
+                style={
+                  item?.flag === "warn" 
+                  ? {color: "red"} 
+                  : null}
+                >
+                  {item.username} {item.sentDate}: {item.message}
               </li>
-          ))}
+            ))}
         </ul>
       </div>
     </div>
