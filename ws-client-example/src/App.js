@@ -1,6 +1,24 @@
 import React, { useState, useEffect } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 
+import cavaloAudio from "./audio/cavalo.mp3";
+import naoAudio from "./audio/nao.mp3";
+import eleGostaAudio from "./audio/ele-gosta.mp3";
+import queEIssoMeuFilhoCalmaAudio from "./audio/que-isso-meu-filho-calma.mp3";
+import tomeAudio from "./audio/tome.mp3";
+import uiAudio from "./audio/ui.mp3";
+
+function getFunnyAudioByMessage(message = "") {
+  if (message.includes("cavalo")) return new Audio(cavaloAudio);
+  if (message.includes("não")) return new Audio(naoAudio);
+  if (message.includes("ele gosta")) return new Audio(eleGostaAudio);
+  if (message.includes("que é isso meu filho calma")) return new Audio(queEIssoMeuFilhoCalmaAudio);
+  if (message.includes("tome")) return new Audio(tomeAudio);
+  if (message.includes("ui")) return new Audio(uiAudio);
+
+  return null;
+}
+
 function UsernameForm({ setUsername }) {
   const [formValue, setFormValue] = useState("");
 
@@ -22,7 +40,14 @@ function ChatScreen({ username }) {
     if (lastMessage !== null) {
       console.log("lastMessage", lastMessage)
       if (lastMessage.data) {
-        setMessageHistory((prev) => prev.concat(JSON.parse(lastMessage.data)));
+        const lastMessageData = JSON.parse(lastMessage.data);
+        const audio = getFunnyAudioByMessage(lastMessageData.message);
+
+        if (audio) {
+          audio.play();
+        }
+
+        setMessageHistory((prev) => prev.concat(lastMessageData));
       }
     }
   }, [lastMessage, setMessageHistory]);
@@ -33,7 +58,7 @@ function ChatScreen({ username }) {
       message,
       username
     };
-
+    
     sendJsonMessage(messageBody);
     setMessage("");
   };
