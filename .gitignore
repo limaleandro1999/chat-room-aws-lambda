@@ -9,3 +9,5 @@ jspm_packages
 .dynamodb
 
 .env
+
+coverage
